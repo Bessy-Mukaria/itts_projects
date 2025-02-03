@@ -1,46 +1,133 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ITTS Model</title>
+    <title>Image-to-Text-to-Speech (ITTS) Model</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+            background-color: #f7f9fc;
+        }
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        h2 {
+            color: #555;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .card {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 10px;
+            max-width: 600px;
+            background: #ffffff;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        button, label {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        button:hover, label:hover {
+            background-color: #0056b3;
+        }
+        input[type="file"] {
+            display: none; /* Hide file input */
+        }
+        audio {
+            margin-top: 10px;
+        }
+        #loading {
+            font-size: 1.2em;
+            color: #007bff;
+            margin-top: 20px;
+        }
+        p {
+            font-size: 1em;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
-    <h1>Upload an Image</h1>
-    <form id="uploadForm">
-        <input type="file" name="image" id="imageInput" accept="image/*" required>
-        <button type="submit">Upload</button>
-    </form>
-    <audio id="audioPlayer" controls style="display:none;"></audio>
+    <h1>Visionary Voice AI:Image-to-Text-to-Speech (ITTS)</h1>
+    <h2>Your visual guide to digital content!</h2>
+
+    <div class="card">
+        <form id="uploadForm">
+            <label for="imageInput">Choose an Image</label>
+            <input type="file" id="imageInput" name="image" accept="image/*" required>
+        </form>
+        <div id="output" style="display: none;">
+            <p><strong>Generated Text:</strong> <span id="caption"></span></p>
+            <audio id="audioPlayer" controls></audio>
+            <p id="processingTime"></p>
+        </div>
+    </div>
+
+    <div id="loading" style="display: none;">Processing... Please wait.</div>
 
     <script>
-        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        document.getElementById('imageInput').addEventListener('change', async (e) => {
             const formData = new FormData();
-            const imageInput = document.getElementById('imageInput');
+            formData.append('file', e.target.files[0]);
 
-            if (imageInput.files.length === 0) {
-                alert("Please select an image first.");
-                return;
-            }
+            // Play "Processing, please wait" audio
+            const processingAudio = new Audio('/static/processing_wait.mp3');
+            processingAudio.play();
 
-            formData.append('image', imageInput.files[0]);
+            // Show loading message
+            document.getElementById('loading').style.display = 'block';
+
+            // Hide output during processing
+            document.getElementById('output').style.display = 'none';
 
             try {
-                const response = await fetch('/upload', {
+                const response = await fetch('/upload/', {
                     method: 'POST',
-                    body: formData
+                    body: formData,
                 });
 
+                // Stop the processing audio
+                processingAudio.pause();
+                processingAudio.currentTime = 0;
+
+                // Hide loading message
+                document.getElementById('loading').style.display = 'none';
+
                 if (response.ok) {
-                    const audioUrl = URL.createObjectURL(await response.blob());
+                    const data = await response.json();
+                    // Display caption and audio
+                    document.getElementById('caption').textContent = data.caption;
                     const audioPlayer = document.getElementById('audioPlayer');
-                    audioPlayer.src = audioUrl;
-                    audioPlayer.style.display = 'block';
+                    audioPlayer.src = data.audio_path;
+                    audioPlayer.play();
+
+                    // Display processing time
+                    document.getElementById('processingTime').textContent = `Processing time: ${data.processing_time}`;
+
+                    // Show the output
+                    document.getElementById('output').style.display = 'block';
                 } else {
-                    alert('Error processing image');
+                    alert('Error processing the image. Please upload a valid image.');
                 }
             } catch (error) {
-                console.error('Error:', error);
-                alert('Failed to upload image.');
+                // Stop the processing audio if an error occurs
+                processingAudio.pause();
+                processingAudio.currentTime = 0;
+
+                // Hide loading message and show an error alert
+                document.getElementById('loading').style.display = 'none';
+                alert('An error occurred. Please try again.');
+                console.error(error);
             }
         });
     </script>

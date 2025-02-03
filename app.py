@@ -1,40 +1,80 @@
-from flask import Flask, request, jsonify, send_file, render_template
+from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from PIL import Image
 from transformers import BlipProcessor, BlipForConditionalGeneration
 from gtts import gTTS
 import torch
 import os
+import uuid
+import time
 
-app = Flask(__name__, template_folder="templates", static_folder="static")
+# Initialize the FastAPI application
+app = FastAPI()
 
-# Load the BLIP model and processor
-processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
-model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
+# Serve static files (e.g., audio and other assets)
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
-@app.route('/')
-def home():
-    return render_template('index.html')
+# Global variables for the model and processor
+processor = None
+model = None
 
-@app.route('/upload', methods=['POST'])
-def upload_image():
-    if 'image' not in request.files:
-        return jsonify({"error": "No image uploaded"}), 400
+@app.on_event("startup")
+async def load_model():
+    """
+    Load the BLIP model and processor once when the server starts.
+    """
+    global processor, model
+    processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
+    model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
+    print("Model and processor loaded successfully.")
 
-    image_file = request.files['image']
-    image = Image.open(image_file).convert('RGB')
+@app.get("/")
+async def home():
+    """
+    Serve the homepage (index.html).
+    """
+    return FileResponse("templates/index.html")
 
-    # Process and generate caption
+@app.post("/upload/")
+async def upload_image(file: UploadFile = File(...)):
+    """
+    Handle image upload, generate caption, convert it to audio, and return the results.
+    """
+    # Start timing
+    start_time = time.time()
+
+    # Ensure the uploaded file is an image
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="Uploaded file must be an image")
+
+    # Read and process the image
+    image = Image.open(file.file).convert("RGB")
+
+    # Generate caption using the BLIP model
     inputs = processor(image, return_tensors="pt")
     with torch.no_grad():
         out = model.generate(**inputs)
     caption = processor.decode(out[0], skip_special_tokens=True)
 
-    # Convert text to speech
+    # Generate a unique file name for the audio file
+    audio_file_name = f"output_{uuid.uuid4().hex}.mp3"
+    audio_path = f"static/{audio_file_name}"
+
+    # Convert the caption to speech
     tts = gTTS(text=caption, lang='en')
-    audio_path = "static/output.mp3"  # Store in static folder
     tts.save(audio_path)
 
-    return send_file(audio_path, as_attachment=True)
+    # End timing
+    end_time = time.time()
+    elapsed_time = end_time - start_time
 
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    # Log processing time
+    print(f"Processing time: {elapsed_time:.2f} seconds")
+
+    # Return the caption, audio path, and processing time
+    return JSONResponse(content={
+        "caption": caption,
+        "audio_path": f"/static/{audio_file_name}",
+        "processing_time": f"{elapsed_time:.2f} seconds"
+    })
