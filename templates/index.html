@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ITTS Model</title>
+</head>
+<body>
+    <h1>Upload an Image</h1>
+    <form id="uploadForm">
+        <input type="file" name="image" id="imageInput" accept="image/*" required>
+        <button type="submit">Upload</button>
+    </form>
+    <audio id="audioPlayer" controls style="display:none;"></audio>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            const imageInput = document.getElementById('imageInput');
+
+            if (imageInput.files.length === 0) {
+                alert("Please select an image first.");
+                return;
+            }
+
+            formData.append('image', imageInput.files[0]);
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const audioUrl = URL.createObjectURL(await response.blob());
+                    const audioPlayer = document.getElementById('audioPlayer');
+                    audioPlayer.src = audioUrl;
+                    audioPlayer.style.display = 'block';
+                } else {
+                    alert('Error processing image');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to upload image.');
+            }
+        });
+    </script>
+</body>
+</html>
