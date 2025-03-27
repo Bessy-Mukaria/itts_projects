@@ -1,135 +1,214 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Image-to-Text-to-Speech (ITTS) Model</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            text-align: center;
-            background-color: #f7f9fc;
-        }
-        h1 {
-            color: #333;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-        h2 {
-            color: #555;
-            font-size: 1.2em;
-            margin-bottom: 20px;
-        }
-        .card {
-            border: 1px solid #ccc;
-            padding: 20px;
-            margin: 20px auto;
-            border-radius: 10px;
-            max-width: 600px;
-            background: #ffffff;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        button, label {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: white;
-            font-size: 1em;
-            cursor: pointer;
-        }
-        button:hover, label:hover {
-            background-color: #0056b3;
-        }
-        input[type="file"] {
-            display: none; /* Hide file input */
-        }
-        audio {
-            margin-top: 10px;
-        }
-        #loading {
-            font-size: 1.2em;
-            color: #007bff;
-            margin-top: 20px;
-        }
-        p {
-            font-size: 1em;
-            color: #333;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ITTS - Visionary Voice AI</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    .custom-upload {
+      border: 2px dashed #cbd5e0;
+      padding: 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+      width: 200px;
+      margin: 0 auto;
+    }
+    .custom-upload:hover {
+      background-color: #edf2f7;
+    }
+  </style>
 </head>
-<body>
-    <h1>Visionary Voice AI:Image-to-Text-to-Speech (ITTS)</h1>
-    <h2>Your visual guide to digital content!</h2>
-
-    <div class="card">
-        <form id="uploadForm">
-            <label for="imageInput">Choose an Image</label>
-            <input type="file" id="imageInput" name="image" accept="image/*" required>
-        </form>
-        <div id="output" style="display: none;">
-            <p><strong>Generated Text:</strong> <span id="caption"></span></p>
-            <audio id="audioPlayer" controls></audio>
-            <p id="processingTime"></p>
-        </div>
+<body class="bg-gray-100 text-gray-800">
+  <!-- Navbar -->
+  <nav class="bg-white shadow sticky top-0 z-10">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="font-bold text-xl">Visionary Voice AI</h1>
+      <ul class="space-x-6 hidden md:flex">
+        <li><a href="#how" class="hover:text-blue-600">How It Works</a></li>
+        <li><a href="#demo" class="hover:text-blue-600">Try It Out</a></li>
+        <li><a href="#why" class="hover:text-blue-600">Why It Matters</a></li>
+        <li><a href="#contact" class="hover:text-blue-600">Contact</a></li>
+      </ul>
     </div>
+  </nav>
 
-    <div id="loading" style="display: none;">Processing... Please wait.</div>
+  <!-- Hero Section -->
+  <section class="text-center py-20 bg-white">
+    <p class="max-w-3xl mx-auto text-sm text-gray-600 mb-6">This prototype demonstrates how AI and web technologies can be integrated to improve accessibility for visually impaired users in digital  contexts.</p>
+    <h2 class="text-3xl font-bold">Image-to-Text-to-Speech (ITTS)</h2>
+    <p class="text-lg mt-2">Helping visually impaired users access visual content with ease.</p>
+  </section>
 
-    <script>
-        document.getElementById('imageInput').addEventListener('change', async (e) => {
-            const formData = new FormData();
-            formData.append('file', e.target.files[0]);
+  <!-- How It Works -->
+  <section id="how" class="py-16 px-4 bg-gray-50 text-center">
+    <h3 class="text-2xl font-semibold mb-8">How It Works</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+      <div>
+        <div class="text-blue-500 text-4xl">📷</div>
+        <h4 class="font-bold mt-2">Upload Image</h4>
+        <p class="text-sm">User uploads a clothing image through the web interface.</p>
+      </div>
+      <div>
+        <div class="text-green-500 text-4xl">🧠</div>
+        <h4 class="font-bold mt-2">AI Captioning</h4>
+        <p class="text-sm">A BLIP model generates a meaningful description of the image.</p>
+      </div>
+      <div>
+        <div class="text-purple-500 text-4xl">🔊</div>
+        <h4 class="font-bold mt-2">Audio Output</h4>
+        <p class="text-sm">Google TTS converts the caption into spoken audio.</p>
+      </div>
+    </div>
+  </section>
 
-            // Play "Processing, please wait" audio
-            const processingAudio = new Audio('/static/processing_wait.mp3');
-            processingAudio.play();
+  <!-- Upload Demo Section -->
+  <section id="demo" class="py-16 px-4 text-center">
+    <h3 class="text-2xl font-semibold mb-6">Try It Out</h3>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <label for="imageInput" class="custom-upload inline-block cursor-pointer text-gray-700">
+          <div class="flex flex-col items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm2 5a2 2 0 114 0 2 2 0 01-4 0zM2 13l4-4 3 3 5-5 4 4v3H2v-1z" />
+            </svg>
+            <p class="mt-2 text-sm">Upload Image (Max: 5MB)</p>
+          </div>
+        </label>
+        <input type="file" id="imageInput" name="file" accept="image/*" class="hidden" required />
+      </form>
+    <div id="loading" class="mt-4 hidden text-blue-600 font-medium flex items-center justify-center">
+      <svg class="animate-spin h-5 w-5 mr-2 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+      </svg>
+      Generating description: Processing... please wait.
+    </div>
+    <div id="output" class="mt-6 hidden">
+      <p><strong>Generated Text (English):</strong> <span id="caption"></span></p>
+      <div id="translate-section">
+  <label for="language" class="block mb-2 font-medium">Select Language:</label>
+  <select id="language" class="mb-4 px-4 py-2 rounded border border-gray-300">
+    <option value="sw">Kiswahili</option>
+    <option value="en">English</option>
+    <option value="fr">French</option>
+  </select>
+  <button id="translateBtn" class="px-4 py-2 text-sm bg-yellow-500 text-white rounded hover:bg-yellow-600">
+    Translate / Tafsiri / Traduire
+  </button>
+  <p class="mt-2 text-sm text-gray-700" id="translation"></p>
+</div>
+      <img id="previewImage" alt="Uploaded preview" class="mx-auto my-4 max-w-xs rounded shadow" />
+      <audio id="audioPlayer" controls autoplay class="mt-2 mx-auto"></audio>
+      <a id="downloadLink" href="#" download class="mt-4 inline-block text-blue-600 hover:underline">Download Audio</a>
+    </div>
+  </section>
 
-            // Show loading message
-            document.getElementById('loading').style.display = 'block';
+  <!-- Why It Matters -->
+  <section id="special" class="py-16 px-4 bg-white text-center">
+    <h3 class="text-2xl font-semibold mb-4">What Makes This Special?</h3>
+    <div class="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
+      <div class="p-4 border rounded shadow">🧠 Uses BLIP transformer model for contextual image captioning</div>
+      <div class="p-4 border rounded shadow">🔊 gTTS and browser-based TTS for bilingual audio feedback</div>
+      <div class="p-4 border rounded shadow">🌐 Multilingual support: English, Kiswahili, French</div>
+      <div class="p-4 border rounded shadow">⚡ Deployed on Render with FastAPI backend for scalability</div>
+      <!-- <div class="p-4 border rounded shadow">🧩 Accessible interface built with TailwindCSS</div>
+      <div class="p-4 border rounded shadow">🎯 Designed with visually impaired users in mind</div> -->
+    </div>
+  </section>
 
-            // Hide output during processing
-            document.getElementById('output').style.display = 'none';
+  <section id="why" class="py-16 px-4 bg-gray-50 text-center">
+    <h3 class="text-2xl font-semibold mb-4">Why It Matters</h3>
+    <p class="max-w-2xl mx-auto">Clothing is a powerful form of self-expression. ITTS empowers visually impaired individuals by enabling independent exploration of clothing and style, enhancing confidence, and bridging the digital divide.</p>
+  </section>
 
-            try {
-                const response = await fetch('/upload/', {
-                    method: 'POST',
-                    body: formData,
-                });
+  <!-- Contact Section -->
+  <footer id="contact" class="py-8 bg-white text-center border-t">
+    <p class="text-sm">View on GitHub: <a href="https://github.com/Bessy-Mukaria/itts_projects" target="_blank" class="text-blue-600 underline">Bessy-Mukaria/itts_projects</a></p>
+    <p class="text-sm">Have feedback or want to collaborate? Reach out at <a href="mailto:bessy.kathure@strathmore.com" class="text-blue-600 underline">bessy.kathure@strathmore.com</a></p>
+    <p class="text-xs text-gray-500 mt-2">&copy; 2025 Visionary Voice AI</p>
+  </footer>
 
-                // Stop the processing audio
-                processingAudio.pause();
-                processingAudio.currentTime = 0;
+  <!-- Script -->
+  <script>
+    document.getElementById('imageInput').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
 
-                // Hide loading message
-                document.getElementById('loading').style.display = 'none';
+      if (!file.type.startsWith('image/')) {
+        alert('Please upload a valid image.');
+        return;
+      }
 
-                if (response.ok) {
-                    const data = await response.json();
-                    // Display caption and audio
-                    document.getElementById('caption').textContent = data.caption;
-                    const audioPlayer = document.getElementById('audioPlayer');
-                    audioPlayer.src = data.audio_path;
-                    audioPlayer.play();
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image must be less than 5MB.');
+        return;
+      }
 
-                    // Display processing time
-                    document.getElementById('processingTime').textContent = `Processing time: ${data.processing_time}`;
+      const formData = new FormData();
+      formData.append('file', file);
+      document.getElementById('loading').classList.remove('hidden');
+      document.getElementById('output').classList.add('hidden');
 
-                    // Show the output
-                    document.getElementById('output').style.display = 'block';
-                } else {
-                    alert('Error processing the image. Please upload a valid image.');
-                }
-            } catch (error) {
-                // Stop the processing audio if an error occurs
-                processingAudio.pause();
-                processingAudio.currentTime = 0;
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        document.getElementById('previewImage').src = event.target.result;
+      };
+      reader.readAsDataURL(file);
 
-                // Hide loading message and show an error alert
-                document.getElementById('loading').style.display = 'none';
-                alert('An error occurred. Please try again.');
-                console.error(error);
-            }
+      try {
+        const response = await fetch('/upload/', {
+          method: 'POST',
+          body: formData
         });
-    </script>
+
+        document.getElementById('loading').classList.add('hidden');
+
+        if (response.ok) {
+          const data = await response.json();
+          document.getElementById('caption').textContent = data.caption;
+          document.getElementById('translation').textContent = '';
+          document.getElementById('audioPlayer').src = data.audio_path;
+          document.getElementById('audioPlayer').play();
+          document.getElementById('downloadLink').href = data.audio_path;
+          document.getElementById('output').classList.remove('hidden');
+        } else {
+          alert('Error processing image.');
+        }
+      } catch (err) {
+        alert('Something went wrong.');
+        console.error(err);
+        document.getElementById('loading').classList.add('hidden');
+      }
+    });
+
+    document.getElementById('translateBtn').addEventListener('click', async function () {
+      const english = document.getElementById('caption').textContent.toLowerCase();
+      const targetLang = document.getElementById('language').value;
+      // Using Google Translate API via unofficial endpoint
+      fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${targetLang}&dt=t&q=${encodeURIComponent(english)}`)
+        .then(res => res.json())
+        .then(data => {
+          const translation = data[0][0][0];
+          document.getElementById('translation').textContent = translation;
+          const swahiliAudio = new SpeechSynthesisUtterance(translation);
+          swahiliAudio.lang = targetLang;
+          const voices = speechSynthesis.getVoices();
+          const matchingVoice = voices.find(voice => voice.lang.startsWith(targetLang));
+          if (matchingVoice) swahiliAudio.voice = matchingVoice;
+          speechSynthesis.speak(swahiliAudio);
+        })
+        .catch(() => {
+          document.getElementById('translation').textContent = 'Tafsiri haijapatikana';
+        });
+      
+    });
+  document.getElementById('language').addEventListener('change', () => {
+      const lang = document.getElementById('language').value;
+      const btn = document.getElementById('translateBtn');
+      if (lang === 'sw') btn.textContent = 'Tafsiri';
+      else if (lang === 'fr') btn.textContent = 'Traduire';
+      else btn.textContent = 'Translate';
+    });
+  </script>
 </body>
 </html>
