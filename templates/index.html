@@ -7,14 +7,14 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
     .custom-upload {
-      border: 2px dashed #cbd5e0;
-      padding: 20px;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.3s ease-in-out;
-      width: 200px;
-      margin: 0 auto;
-    }
+  border: 2px dashed #cbd5e0;
+  padding: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  width: 200px;   /* Reduced from a larger value */
+  margin: 0 auto;
+}
     .custom-upload:hover {
       background-color: #edf2f7;
     }
@@ -27,7 +27,7 @@
       <h1 class="font-bold text-xl">Visionary Voice AI</h1>
       <ul class="space-x-6 hidden md:flex">
         <li><a href="#how" class="hover:text-blue-600">How It Works</a></li>
-        <li><a href="#demo" class="hover:text-blue-600">Try It Out</a></li>
+        <li><a href="#demo" class="hover:text-blue-600">Assistive Feature Simulation</a></li>
         <li><a href="#why" class="hover:text-blue-600">Why It Matters</a></li>
         <li><a href="#contact" class="hover:text-blue-600">Contact</a></li>
       </ul>
@@ -65,7 +65,7 @@
 
   <!-- Upload Demo Section -->
   <section id="demo" class="py-16 px-4 text-center">
-    <h3 class="text-2xl font-semibold mb-6">Try It Out</h3>
+    <h3 class="text-2xl font-semibold mb-6">Assistive Feature Simulation</h3>
     <form id="uploadForm" enctype="multipart/form-data">
         <label for="imageInput" class="custom-upload inline-block cursor-pointer text-gray-700">
           <div class="flex flex-col items-center justify-center">
