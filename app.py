@@ -130,6 +130,10 @@ async def upload_image(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="Uploaded file must be an image")
 
     image = Image.open(file.file).convert("RGB")
+    # image = image.resize((224, 224))  # Resize to match model input size
+    if image.size[0] > 500 or image.size[1] > 500:
+        image = image.resize((384, 384))
+
     inputs = processor(image, return_tensors="pt").to(device)
 
     with torch.no_grad():
