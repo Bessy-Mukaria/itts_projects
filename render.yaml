@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: itts-fastapi-blip-app
+    env: docker
+    plan: free
+    region: oregon  # or frankfurt, depending on your location
+    autoDeploy: true
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
+    ports:
+      - port: 10000
+        protocol: tcp

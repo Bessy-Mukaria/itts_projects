@@ -173,3 +173,5 @@ cython_debug/
 static/output_*.mp3
 test.ipynb
 static/output.mp3
+
+blip-model/
