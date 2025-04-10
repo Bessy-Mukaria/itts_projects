@@ -23,8 +23,9 @@ async def load_model():
     global processor, model
 
     print("🔄 Loading BLIP model from local folder...")
-    processor = BlipProcessor.from_pretrained("blip-model")
-    model = BlipForConditionalGeneration.from_pretrained("blip-model")
+    processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
+    model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
+
     print("✅ Model and processor loaded successfully.")
 
 @app.get("/")
