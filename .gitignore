@@ -170,4 +170,6 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 # In your .gitignore file
-models/
+static/output_*.mp3
+test.ipynb
+static/output.mp3
