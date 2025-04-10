@@ -81,9 +81,7 @@ itts_projects/
 
 ## 🧠 Future Improvements
 
-- 🌍 Add multilingual support for caption-to-speech output
-- 🧹 Clean up or auto-expire old audio files
-- 💡 Optional switch to Streamlit for richer interactivity
+- 🌍 Add more multilingual support for caption-to-speech output
 - 🚀 Deploy with GPU acceleration for faster inference
 
 ---
